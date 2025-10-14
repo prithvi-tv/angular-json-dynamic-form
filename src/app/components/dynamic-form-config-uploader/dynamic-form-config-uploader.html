@@ -1,0 +1,4 @@
+<form class="card flex flex-wrap gap-6 items-center justify-between" (submit)="onSubmit($event)">
+    <p-fileupload #fu mode="basic" chooseLabel="Choose" chooseIcon="pi pi-upload" accept=".json" maxFileSize="1000000" name="formConfig" />
+    <p-button type="submit" label="Upload" severity="secondary" />
+</form>

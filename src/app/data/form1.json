@@ -2,7 +2,7 @@
   "title": "User Registration",
   "fields": [
     {
-      "label": "Full Name",
+      "label": "Full Naam",
       "name": "fullName",
       "type": "text",
       "required": true

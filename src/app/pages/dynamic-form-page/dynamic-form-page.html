@@ -1,120 +1,15 @@
-<p-card>
-  <ng-template #title>{{ dynamicFormSchema.title }}</ng-template>
-
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
-    @for (field of dynamicFormSchema.fields; track field.name) {
-      <div class="flex flex-col gap-2">
-        @switch (field.type) {
-          @case ('text') {
-            <p-floatlabel>
-              <input
-                pInputText
-                [id]="field.name"
-                [formControlName]="field.name"
-                class="w-full"
-              />
-              <label [for]="field.name">
-                {{ field.label }}
-                @if (field.required) {
-                  <span class="text-red-500">*</span>
-                }
-              </label>
-            </p-floatlabel>
-          }
-          @case ('date') {
-            <label [for]="field.name" class="font-medium">
-              {{ field.label }}
-              @if (field.required) {
-                <span class="text-red-500">*</span>
-              }
-            </label>
-            <input
-              type="date"
-              [id]="field.name"
-              [formControlName]="field.name"
-              class="p-2 border border-gray-300 rounded w-full"
-            />
-          }
-          @case ('dropdown') {
-            <label [for]="field.name" class="font-medium">
-              {{ field.label }}
-              @if (field.required) {
-                <span class="text-red-500">*</span>
-              }
-            </label>
-            <select
-              [id]="field.name"
-              [formControlName]="field.name"
-              class="p-2 border border-gray-300 rounded w-full"
-            >
-              <option value="">Select {{ field.label }}</option>
-              @for (option of field.options; track option) {
-                <option [value]="option">{{ option }}</option>
-              }
-            </select>
-          }
-          @case ('multiselect') {
-            <label [for]="field.name" class="font-medium">
-              {{ field.label }}
-              @if (field.required) {
-                <span class="text-red-500">*</span>
-              }
-            </label>
-            <select
-              [id]="field.name"
-              [formControlName]="field.name"
-              multiple
-              class="p-2 border border-gray-300 rounded w-full min-h-[100px]"
-            >
-              @for (option of field.options; track option) {
-                <option [value]="option">{{ option }}</option>
-              }
-            </select>
-          }
-          @case ('checkbox') {
-            <div class="flex items-center gap-2">
-              <input
-                type="checkbox"
-                [id]="field.name"
-                [formControlName]="field.name"
-                class="w-4 h-4"
-              />
-              <label [for]="field.name" class="cursor-pointer">
-                {{ field.label }}
-              </label>
-            </div>
-          }
-          @case ('textarea') {
-            <label [for]="field.name" class="font-medium">
-              {{ field.label }}
-              @if (field.required) {
-                <span class="text-red-500">*</span>
-              }
-            </label>
-            <textarea
-              [id]="field.name"
-              [formControlName]="field.name"
-              rows="4"
-              class="p-2 border border-gray-300 rounded w-full"
-            ></textarea>
-          }
-        }
-
-        @if (getErrorMessage(field.name)) {
-          <small class="text-red-500">{{ getErrorMessage(field.name) }}</small>
-        }
-      </div>
+<div class="grid grid-cols-2 p-4 gap-4 h-screen">
+  <div class="flex flex-col gap-4 overflow-auto">
+    <p-card>
+      <app-dynamic-form-config-uploader></app-dynamic-form-config-uploader>
+    </p-card>
+    @if (dynamicFormData().length) {
+    <p-card>
+      <app-submitted-data-viewer></app-submitted-data-viewer>
+    </p-card>
     }
-
-    <div class="flex gap-3 mt-4">
-      <p-button
-        type="submit"
-      >Submit</p-button>
-      <p-button
-        type="reset"
-        severity="secondary"
-        (click)="form.reset()"
-      >Reset</p-button>
-    </div>
-  </form>
-</p-card>
+  </div>
+  <div class="h-full">
+    <app-dynamic-form [dynamicFormSchema]="dynamicFormSchema()"></app-dynamic-form>
+  </div>
+</div>
