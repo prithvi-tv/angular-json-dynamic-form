@@ -29,9 +29,9 @@ import { InputTextModule } from 'primeng/inputtext';
 })
 export class DynamicForm implements OnInit, OnChanges {
   @Input() dynamicFormSchema: FormSchema | null = null;
-  form!: FormGroup;
+  form: FormGroup | null = null;
 
-  constructor(private formBuilder: FormBuilder, private dynamicFormService: DynamicFormService) { }
+  constructor(private formBuilder: FormBuilder, private dynamicFormService: DynamicFormService) {}
 
   ngOnInit(): void {
     this.buildDynamicForm();
@@ -43,22 +43,60 @@ export class DynamicForm implements OnInit, OnChanges {
     }
   }
 
+  isFieldVisible(fieldName: string): boolean {
+    if (!this.dynamicFormSchema || !this.form) return true;
+
+    const field = this.dynamicFormSchema.fields.find((f) => f.name === fieldName);
+    if (!field?.conditional) return true;
+
+    const parentControl = this.form.get(field.conditional.parentFieldName);
+    if (!parentControl) return false;
+
+    const parentValue = parentControl.value;
+    const expectedValue = field.conditional.parentFieldValue;
+    const isVisible = parentValue === expectedValue;
+
+    const control = this.form.get(fieldName);
+    if (control) {
+      if (isVisible) {
+        const currentValidators = control.validator;
+        if (!currentValidators) {
+          const validators = this.getFieldValidators(field);
+          control.setValidators(validators);
+          control.updateValueAndValidity({ emitEvent: false });
+        }
+      } else {
+        control.setValidators([]);
+        control.setValue(
+          field.type === 'checkbox' ? false : field.type === 'multiselect' ? [] : ''
+        );
+        control.updateValueAndValidity({ emitEvent: false });
+      }
+    }
+
+    return isVisible;
+  }
+
+  private getFieldValidators(field: any): ValidatorFn[] {
+    const validators: ValidatorFn[] = [];
+
+    if (field.required) {
+      validators.push(Validators.required);
+    }
+
+    if (field.validation?.pattern) {
+      validators.push(Validators.pattern(field.validation.pattern));
+    }
+
+    return validators;
+  }
+
   private buildDynamicForm(): void {
     if (!this.dynamicFormSchema) return;
 
     const formControls: Record<string, [string | boolean | string[], ValidatorFn[]]> = {};
 
     this.dynamicFormSchema.fields.forEach((field) => {
-      const validators: ValidatorFn[] = [];
-
-      if (field.required) {
-        validators.push(Validators.required);
-      }
-
-      if (field.validation?.pattern) {
-        validators.push(Validators.pattern(field.validation.pattern));
-      }
-
       let defaultValue: string | boolean | string[] = '';
       if (field.type === 'checkbox') {
         defaultValue = false;
@@ -66,6 +104,7 @@ export class DynamicForm implements OnInit, OnChanges {
         defaultValue = [];
       }
 
+      const validators = field.conditional ? [] : this.getFieldValidators(field);
       formControls[field.name] = [defaultValue, validators];
     });
 
@@ -73,6 +112,8 @@ export class DynamicForm implements OnInit, OnChanges {
   }
 
   public onSubmit(): void {
+    if (!this.form) return;
+
     if (this.form.valid) {
       this.dynamicFormService.setDynamicFormData(this.form.value);
     } else {
@@ -81,10 +122,12 @@ export class DynamicForm implements OnInit, OnChanges {
   }
 
   public getErrorMessage(fieldName: string): string {
+    if (!this.form) return '';
+
     const control = this.form.get(fieldName);
     const field = this.dynamicFormSchema?.fields.find((field) => field.name === fieldName);
 
-    if (!control || !control.errors || !control.touched) {
+    if (!control || !control.errors || !control.touched || control.disabled) {
       return '';
     }
 

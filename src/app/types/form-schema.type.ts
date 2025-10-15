@@ -12,6 +12,11 @@ export interface FormField {
   required?: boolean;
   validation?: FieldValidation;
   options?: string[];
+  placeholder?: string;
+  conditional?: {
+    parentFieldName: string;
+    parentFieldValue: string | boolean | number | Date | Array<string | boolean | number | Date>;
+  }
 }
 
 export interface FormSchema {

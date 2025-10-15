@@ -1,8 +1,9 @@
 <p-card>
-  @if (dynamicFormSchema) {
+  @if (dynamicFormSchema && form) {
   <ng-template #title>{{ dynamicFormSchema.title }}</ng-template>
   <form id="dynamicForm" [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
-    @for (field of dynamicFormSchema.fields; track field.name) {
+    @for (field of dynamicFormSchema.fields; track field.name) { @if (!field.conditional ||
+    isFieldVisible(field.name)) {
     <div class="flex flex-col gap-2">
       @switch (field.type) { @case ('text') {
       <p-floatlabel>
@@ -85,7 +86,7 @@
       <small class="text-red-500">{{ getErrorMessage(field.name) }}</small>
       }
     </div>
-    }
+    } }
 
     <div class="flex gap-3 mt-4">
       <p-button type="submit" form="dynamicForm">Submit</p-button>

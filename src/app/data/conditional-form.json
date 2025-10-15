@@ -2,7 +2,7 @@
   "title": "User Registration",
   "fields": [
     {
-      "label": "Full Naam",
+      "label": "Full name",
       "name": "fullName",
       "type": "text",
       "required": true
@@ -41,9 +41,14 @@
       "type": "checkbox"
     },
     {
-      "label": "About Yourself",
-      "name": "about",
-      "type": "textarea"
+      "label": "Newsletter address",
+      "name": "newsletterAddress",
+      "type": "textarea",
+      "required": true,
+      "conditional": {
+        "parentFieldName": "subscribe",
+        "parentFieldValue": true
+      }
     }
   ]
 }
