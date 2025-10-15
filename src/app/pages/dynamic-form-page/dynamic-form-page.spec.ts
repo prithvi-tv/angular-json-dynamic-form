@@ -1,6 +1,8 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { DynamicFormPage } from '@/pages/dynamic-form-page/dynamic-form-page';
+import {DynamicFormPage} from '@/pages/dynamic-form-page/dynamic-form-page';
+import {provideZonelessChangeDetection} from '@angular/core';
+import {provideHttpClient} from '@angular/common/http';
 
 describe('DynamicForm', () => {
   let component: DynamicFormPage;
@@ -8,7 +10,8 @@ describe('DynamicForm', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DynamicFormPage]
+      imports: [DynamicFormPage],
+      providers: [provideZonelessChangeDetection(), provideHttpClient()]
     })
     .compileComponents();
 

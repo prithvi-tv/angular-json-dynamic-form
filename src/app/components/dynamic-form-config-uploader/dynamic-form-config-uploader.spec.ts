@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DynamicFormConfigUploader } from './dynamic-form-config-uploader';
+import {provideZonelessChangeDetection} from '@angular/core';
+import {provideHttpClient} from '@angular/common/http';
 
 describe('DynamicFormConfigUploader', () => {
   let component: DynamicFormConfigUploader;
@@ -9,6 +11,7 @@ describe('DynamicFormConfigUploader', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DynamicFormConfigUploader],
+      providers: [provideZonelessChangeDetection(), provideHttpClient()]
     }).compileComponents();
 
     fixture = TestBed.createComponent(DynamicFormConfigUploader);

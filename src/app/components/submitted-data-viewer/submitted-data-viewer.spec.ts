@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SubmittedDataViewer } from './submitted-data-viewer';
+import {provideZonelessChangeDetection} from '@angular/core';
 
 describe('SubmittedDataViewer', () => {
   let component: SubmittedDataViewer;
@@ -8,7 +9,8 @@ describe('SubmittedDataViewer', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SubmittedDataViewer]
+      imports: [SubmittedDataViewer],
+      providers: [provideZonelessChangeDetection()]
     })
     .compileComponents();
 

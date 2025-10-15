@@ -1,7 +1,6 @@
-import { TestBed } from '@angular/core/testing';
-import { DynamicFormService } from './dynamic-form-service';
-import { FormSchema } from '@/types/form-schema.type';
-import { provideZonelessChangeDetection } from '@angular/core';
+import {TestBed} from '@angular/core/testing';
+import {DynamicFormService} from './dynamic-form-service';
+import {provideZonelessChangeDetection} from '@angular/core';
 
 describe('DynamicFormService', () => {
   let service: DynamicFormService;
