@@ -4,7 +4,8 @@
 
 Follow the below steps:
 
-- Run the command `ng serve`
+- Run the command `npm install` to install all the project dependancies
+- Run the command `npm run start`
 - Go to the browser and type `http://localhost:4200/`
 - Paste a supported form schema JSON on the text aread (You can find some valid JSON below)
 - Then click on the `Upload` button
@@ -68,24 +69,35 @@ Follow the below steps:
 ```
 
 ### With Conditional Fields
+
 ```
 {
-  "title": "User Registration",
+  "title": "Job Application Form",
   "fields": [
     {
-      "label": "Full name",
+      "label": "Full Name",
       "name": "fullName",
       "type": "text",
       "required": true
     },
     {
-      "label": "Email",
+      "label": "Email Address",
       "name": "email",
       "type": "text",
       "required": true,
       "validation": {
         "pattern": "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$",
         "message": "Invalid email address"
+      }
+    },
+    {
+      "label": "Phone Number",
+      "name": "phone",
+      "type": "text",
+      "required": true,
+      "validation": {
+        "pattern": "^[0-9]{10}$",
+        "message": "Please enter a 10-digit phone number"
       }
     },
     {
@@ -97,29 +109,40 @@ Follow the below steps:
       "label": "Gender",
       "name": "gender",
       "type": "dropdown",
-      "options": ["Male", "Female", "Other"],
-      "required": true
+      "options": ["Male", "Female", "Non-binary", "Prefer not to say"]
     },
     {
-      "label": "Hobbies",
-      "name": "hobbies",
-      "type": "multiselect",
-      "options": ["Reading", "Sports", "Music", "Travel"]
-    },
-    {
-      "label": "Subscribe to newsletter",
-      "name": "subscribe",
+      "label": "Are you an experienced developer?",
+      "name": "isExperienced",
       "type": "checkbox"
     },
     {
-      "label": "Newsletter address",
-      "name": "newsletterAddress",
-      "type": "textarea",
+      "label": "LinkedIn Profile",
+      "name": "linkedin",
+      "type": "text",
       "required": true,
       "conditional": {
-        "parentFieldName": "subscribe",
+        "parentFieldName": "isExperienced",
         "parentFieldValue": true
       }
+    },
+    {
+      "label": "Preferred Programming Languages",
+      "name": "preferredLanguages",
+      "type": "multiselect",
+      "options": ["JavaScript", "TypeScript", "Python", "Java", "Go", "Rust"]
+    },
+    {
+      "label": "Position Applied For",
+      "name": "position",
+      "type": "dropdown",
+      "options": ["Frontend Developer", "Backend Developer", "UI/UX Designer", "Project Manager"],
+      "required": true
+    },
+    {
+      "label": "Why Should We Hire You?",
+      "name": "about",
+      "type": "textarea"
     }
   ]
 }
@@ -131,5 +154,5 @@ Follow the below steps:
 To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
 
 ```bash
-ng test
+npm run test
 ```
