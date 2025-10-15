@@ -1,4 +1,25 @@
-<form class="card flex flex-wrap gap-6 items-center justify-between" (submit)="onSubmit($event)">
-    <p-fileupload #fu mode="basic" chooseLabel="Choose" chooseIcon="pi pi-upload" accept=".json" maxFileSize="1000000" name="formConfig" />
-    <p-button type="submit" label="Upload" severity="secondary" />
+<form class="card" (submit)="onSubmit($event)">
+  <p class="text-xl font-bold mb-4">Dynamic Form Schema</p>
+  <label for="dynamicFormJson" class="font-medium">
+    Enter form JSON
+    <span class="text-red-500">*</span>
+  </label>
+  <textarea
+    name="dynamicFormJson"
+    id="dynamicFormJson"
+    rows="20"
+    class="p-2 border border-gray-300 rounded w-full mb-2"
+    placeholder="Paste your JSON here"
+    (input)="onTextareaInput()"
+  ></textarea>
+
+  @if (errorMessage()) {
+  <div class="text-red-500 text-sm mb-4 p-2 bg-red-50 border border-red-200 rounded">
+    {{ errorMessage() }}
+  </div>
+  }
+  <div class="flex gap-4 items-center">
+    <p-button type="submit" label="Upload" />
+    <p-button type="reset" label="Clear" severity="secondary" />
+  </div>
 </form>

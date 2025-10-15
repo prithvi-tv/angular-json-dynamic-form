@@ -1,45 +1,52 @@
-import { Component, ViewChild } from '@angular/core';
-import { Button } from "primeng/button";
-import { FileUploadModule, FileUpload } from "primeng/fileupload";
-import { DynamicFormService } from "@/services/dynamic-form-service";
-import { FormSchema } from "@/types/form-schema.type";
+import { DynamicFormService } from '@/services/dynamic-form-service';
+import { FormSchema } from '@/types/form-schema.type';
+import { Component, signal } from '@angular/core';
+import { Button } from 'primeng/button';
+import { FileUploadModule } from 'primeng/fileupload';
 
 @Component({
   selector: 'app-dynamic-form-config-uploader',
   imports: [FileUploadModule, Button],
   templateUrl: './dynamic-form-config-uploader.html',
-  styleUrl: './dynamic-form-config-uploader.scss'
+  styleUrl: './dynamic-form-config-uploader.scss',
 })
 export class DynamicFormConfigUploader {
-  @ViewChild('fu') fileUpload!: FileUpload;
+  errorMessage = signal<string | null>(null);
 
-  constructor(private dynamicFormService: DynamicFormService) { }
+  constructor(private dynamicFormService: DynamicFormService) {}
 
   async onSubmit(event: Event) {
     event.preventDefault();
 
-    if (this.fileUpload.files && this.fileUpload.files.length > 0) {
-      const file = this.fileUpload.files[0];
+    this.errorMessage.set(null);
+    const form = event.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const jsonString = formData.get('dynamicFormJson') as string;
 
+    if (!jsonString || jsonString.trim() === '') {
+      this.errorMessage.set('Please enter JSON data');
+      return;
+    }
 
-      try {
-        const jsonContent = await this.readFileAsText(file);
-        const formConfig: FormSchema = JSON.parse(jsonContent);
-        this.dynamicFormService.dynamicFormSchema.set(formConfig);
-        this.fileUpload.clear();
-
-      } catch (error) {
-        console.error('Error parsing JSON file:', error);
+    try {
+      const parsedData = JSON.parse(jsonString);
+      const isValid = this.dynamicFormService.validateFormSchema(parsedData);
+      if (!isValid) {
+        this.errorMessage.set('Invalid JSON format. Please check your schema structure.');
+        return;
       }
+      const validatedSchema: FormSchema = parsedData;
+      this.dynamicFormService.dynamicFormSchema.set(validatedSchema);
+      console.log('Form schema successfully uploaded and validated:', validatedSchema);
+      form.reset();
+    } catch (error) {
+      this.errorMessage.set('Invalid JSON syntax. Please check your JSON formatting.');
     }
   }
 
-  private readFileAsText(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (e) => resolve(e.target?.result as string);
-      reader.onerror = (e) => reject(e);
-      reader.readAsText(file);
-    });
+  onTextareaInput() {
+    if (this.errorMessage()) {
+      this.errorMessage.set(null);
+    }
   }
 }

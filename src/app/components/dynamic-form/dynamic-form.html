@@ -1,6 +1,6 @@
 <p-card data-testid="dynamic-form-card">
   @if (dynamicFormSchema && form) {
-  <ng-template #title>{{ dynamicFormSchema.title }}</ng-template>
+  <p class="text-xl font-bold mb-6">{{ dynamicFormSchema.title }}</p>
   <form
     id="dynamicForm"
     [formGroup]="form"
@@ -108,9 +108,7 @@
     </div>
   </form>
   } @if (!dynamicFormSchema) {
-  <ng-template #title>No Form Schema</ng-template>
-  <ng-template #subtitle data-testid="no-schema-message"
-    >Please upload a form schema to get started.</ng-template
-  >
+  <h1 class="font-bold text-xl">No Form Schema</h1>
+  <p data-testid="no-schema-message">Please upload a form schema to get started.</p>
   }
 </p-card>
