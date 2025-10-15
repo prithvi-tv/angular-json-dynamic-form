@@ -1,13 +1,25 @@
-<p-card>
+<p-card data-testid="dynamic-form-card">
   @if (dynamicFormSchema && form) {
   <ng-template #title>{{ dynamicFormSchema.title }}</ng-template>
-  <form id="dynamicForm" [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
+  <form
+    id="dynamicForm"
+    [formGroup]="form"
+    (ngSubmit)="onSubmit()"
+    class="flex flex-col gap-6"
+    data-testid="dynamic-form"
+  >
     @for (field of dynamicFormSchema.fields; track field.name) { @if (!field.conditional ||
     isFieldVisible(field.name)) {
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-col gap-2" [attr.data-testid]="'field-container-' + field.name">
       @switch (field.type) { @case ('text') {
       <p-floatlabel>
-        <input pInputText [id]="field.name" [formControlName]="field.name" class="w-full" />
+        <input
+          pInputText
+          [id]="field.name"
+          [formControlName]="field.name"
+          [attr.data-testid]="'input-' + field.name"
+          class="w-full"
+        />
         <label [for]="field.name">
           {{ field.label }}
           @if (field.required) {
@@ -89,12 +101,16 @@
     } }
 
     <div class="flex gap-3 mt-4">
-      <p-button type="submit" form="dynamicForm">Submit</p-button>
-      <p-button type="reset" severity="secondary" (click)="form.reset()">Reset</p-button>
+      <p-button type="submit" form="dynamicForm" data-testid="submit-button">Submit</p-button>
+      <p-button type="reset" severity="secondary" (click)="form.reset()" data-testid="reset-button"
+        >Reset</p-button
+      >
     </div>
   </form>
   } @if (!dynamicFormSchema) {
   <ng-template #title>No Form Schema</ng-template>
-  <ng-template #subtitle>Please upload a form schema to get started.</ng-template>
+  <ng-template #subtitle data-testid="no-schema-message"
+    >Please upload a form schema to get started.</ng-template
+  >
   }
 </p-card>

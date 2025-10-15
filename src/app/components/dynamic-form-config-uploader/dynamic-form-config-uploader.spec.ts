@@ -8,9 +8,8 @@ describe('DynamicFormConfigUploader', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DynamicFormConfigUploader]
-    })
-    .compileComponents();
+      imports: [DynamicFormConfigUploader],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(DynamicFormConfigUploader);
     component = fixture.componentInstance;
